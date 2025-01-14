@@ -1,0 +1,25 @@
+# JEH Metabolomics Docker compose.yaml
+# v1.0 2025-01-14
+
+services:
+  app:
+    container_name: jeh-metabolomics # Specify the custom container name
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: jeh-metabolomics:1.0
+    ports:
+      - "8888:8888"  # Map container's port 8888 to localhost:8888
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    runtime: nvidia
+    volumes:
+      - ./sync:/home/dockeruser/sync:z  # Mount the local `./sync` directory to `~/sync/` in the container
+    stdin_open: true            # Keep stdin open for interactive shell
+    tty: true                   # Allocate a pseudo-TTY for the container
+    restart: always
