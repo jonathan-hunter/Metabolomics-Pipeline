@@ -18,6 +18,7 @@ WORKDIR /home/dockeruser
 SHELL ["/bin/bash", "-c"]
 
 # Install git, curl and wget
+RUN sudo apt update
 RUN sudo apt install -y git curl wget
 
 # Pull cuda-samples, make deviceQuery.
@@ -37,13 +38,30 @@ RUN ./miniconda3/bin/activate \
 # Add conda to PATH
 ENV PATH="/home/dockeruser/miniconda3/bin:/home/dockeruser/miniconda3/condabin:${PATH}"
 
-# Install pip
-RUN conda install -y pip
+# Install pip, r-base and r-essentials
+RUN conda install -y pip r-base r-essentials
 
-# Install packages
+# Install packages (python)
 RUN pip install --upgrade pip
 RUN pip install tensorflow[and-cuda]
-RUN pip install pymzml numpy pandas scikit-learn pillow h5py keras NeatMS jupyterlab
+RUN pip install pymzml numpy pandas scikit-learn pillow h5py keras NeatMS 
+
+# Install packages (R)
+RUN Rscript -e "options(repos = c(CRAN = 'https://www.stats.bris.ac.uk/R/')); if (!require('BiocManager', quietly = TRUE)) install.packages('BiocManager'); BiocManager::install('xcms')"
+
+# # Install packages (python) - merge with prev later (XCMS takes a long time to install!)
+# RUN sudo apt install -y build-essential gcc g++ libffi-dev libc6-dev
+# RUN Rscript -e "options(repos = c(CRAN = 'https://www.stats.bris.ac.uk/R/')); install.packages(c('Rcpp', 'lattice', 'gridExtra'))"
+# RUN pip install rpy2
+RUN conda install conda-forge::rpy2
+RUN pip install git+https://github.com/PangeAI/simms
+
+# Install matchms or pyteomics (if reqd).
+#RUN conda install --channel bioconda --channel conda-forge matchms
+#RUN pip install pyteomics
+
+# Install JupyterLab
+RUN pip install jupyterlab
 
 # Set the default command to start JupyterLab
 CMD ["jupyter", "lab", "--ip=0.0.0.0", "--no-browser"]
