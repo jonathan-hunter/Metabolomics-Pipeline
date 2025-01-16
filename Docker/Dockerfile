@@ -44,21 +44,14 @@ RUN conda install -y pip r-base r-essentials
 # Install packages (python)
 RUN pip install --upgrade pip
 RUN pip install tensorflow[and-cuda]
-RUN pip install pymzml numpy pandas scikit-learn pillow h5py keras NeatMS 
+RUN pip install pymzml numpy pandas scikit-learn pillow h5py keras NeatMS
+RUN pip install git+https://github.com/PangeAI/simms
 
 # Install packages (R)
 RUN Rscript -e "options(repos = c(CRAN = 'https://www.stats.bris.ac.uk/R/')); if (!require('BiocManager', quietly = TRUE)) install.packages('BiocManager'); BiocManager::install('xcms')"
 
-# # Install packages (python) - merge with prev later (XCMS takes a long time to install!)
-# RUN sudo apt install -y build-essential gcc g++ libffi-dev libc6-dev
-# RUN Rscript -e "options(repos = c(CRAN = 'https://www.stats.bris.ac.uk/R/')); install.packages(c('Rcpp', 'lattice', 'gridExtra'))"
-# RUN pip install rpy2
+# Install R-Python bridge
 RUN conda install conda-forge::rpy2
-RUN pip install git+https://github.com/PangeAI/simms
-
-# Install matchms or pyteomics (if reqd).
-#RUN conda install --channel bioconda --channel conda-forge matchms
-#RUN pip install pyteomics
 
 # Install JupyterLab
 RUN pip install jupyterlab
