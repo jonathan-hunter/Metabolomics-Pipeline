@@ -38,25 +38,25 @@ RUN ./miniconda3/bin/activate \
 # Add conda to PATH
 ENV PATH="/home/dockeruser/miniconda3/bin:/home/dockeruser/miniconda3/condabin:${PATH}"
 
-# Install pip, r-base and r-essentials
-RUN conda install -y pip r-base r-essentials
+# Install dependencies
+RUN sudo apt install -y libxt6 libxt-dev libarchive-dev
+RUN conda install -y pip r-base r-essentials tensorflow-gpu numpy pandas scikit-learn pillow h5py keras conda-forge::r-cairo conda-forge::cairo
 
 # Install packages (python)
 RUN pip install --upgrade pip
-RUN pip install tensorflow[and-cuda]
-RUN pip install pymzml numpy pandas scikit-learn pillow h5py keras NeatMS
-RUN pip install git+https://github.com/PangeAI/simms
-
-# Install packages (R)
-RUN Rscript -e "options(repos = c(CRAN = 'https://www.stats.bris.ac.uk/R/')); if (!require('BiocManager', quietly = TRUE)) install.packages('BiocManager'); BiocManager::install('xcms')"
+RUN pip install pymzml NeatMS
 
 # Install R-Python bridge
 RUN conda install conda-forge::rpy2
 
 # Install JupyterLab
-RUN pip install jupyterlab
+RUN pip install jupyterlab 
 
-# Set the default command to start JupyterLab
-CMD ["jupyter", "lab", "--ip=0.0.0.0", "--no-browser"]
+# Install packages (R)
+RUN Rscript -e "options(repos = c(CRAN = 'https://www.stats.bris.ac.uk/R/')); if (!require('BiocManager', quietly = TRUE)) install.packages('BiocManager'); BiocManager::install(c('xcms', 'MsExperiment', 'MetaboCoreUtils', 'MsCoreUtils', 'Spectra'))"
 
+# Install SimMS
+RUN pip install git+https://github.com/PangeAI/simms
 
+# Update cudNN
+RUN pip install --upgrade nvidia-cudnn-cu12
