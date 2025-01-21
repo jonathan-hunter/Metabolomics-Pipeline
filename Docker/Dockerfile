@@ -19,58 +19,39 @@ SHELL ["/bin/bash", "-c"]
 
 # Install git, curl and wget
 RUN sudo apt update
-RUN sudo apt install -y git curl wget
+RUN sudo apt install -y git curl wget pip python3-full
+
 
 # Pull cuda-samples, make deviceQuery.
 RUN git clone https://github.com/NVIDIA/cuda-samples.git \
     && cd cuda-samples/Samples/1_Utilities/deviceQuery \
      && make
 
-# Install Miniconda
-RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-py39_24.11.1-0-Linux-x86_64.sh \
-     && bash Miniconda3-py39_24.11.1-0-Linux-x86_64.sh -b -p $HOME/miniconda3 \
-        && rm Miniconda3-py39_24.11.1-0-Linux-x86_64.sh
-
-# Initialize conda    
-RUN ./miniconda3/bin/activate \
-      && ./miniconda3/bin/conda init --all
-
-# Add conda to PATH
-ENV PATH="/home/dockeruser/miniconda3/bin:/home/dockeruser/miniconda3/condabin:${PATH}"
-
-# Install dependencies (apt)
-RUN sudo apt install -y libxt6 libxt-dev libarchive-dev
-
-# Install dependencies (conda)
-RUN conda config --add channels bioconda
-RUN conda config --add channels conda-forge
-# RUN conda config --set channel_priority strict
-RUN conda install -y \
-    pip \
-    r-base >=4.4.0 \
-    r-essentials >=4.4 \
-    tensorflow-gpu \
-    numpy \
-    pandas \
-    scikit-learn \
-    pillow \
-    h5py \
-    keras \
-    r-cairo \
-    cairo \
-    bioconductor-xcms \
-    bioconductor-MsExperiment \
-    bioconductor-MetaboCoreUtils \
-    bioconductor-MsCoreUtils \
-    bioconductor-Spectra \
-    rpy2 \
-    neatms \
-    pymzml \
-    jupyterlab
+# Install python and create a virtual environment     
+RUN sudo apt install -y python3-full
+RUN python3 -m venv ~/venv/
 
 # Install packages (python)
-RUN pip install --upgrade pip
-RUN pip install git+https://github.com/PangeAI/simms
+RUN ~/venv/bin/pip install --upgrade pip
+RUN ~/venv/bin/pip install jupyterlab
 
-# Update cudNN
-RUN pip install --upgrade nvidia-cudnn-cu12
+# Install R
+RUN sudo apt install -y r-base r-base-dev
+
+# Install rpy2
+RUN sudo apt install -y libtirpc-dev
+RUN ~/venv/bin/pip install rpy2
+
+# Install packages contd. (python)
+RUN ~/venv/bin/pip install pymzml numpy pandas scikit-learn pillow h5py keras NeatMS matplotlib
+RUN ~/venv/bin/pip install git+https://github.com/PangeAI/simms
+RUN ~/venv/bin/pip install --upgrade tensorflow[and-cuda]
+RUN ~/venv/bin/pip install torch torchvision torchaudio
+
+# Install R packages
+RUN sudo chown -R dockeruser /usr/local/lib/R/ && sudo chmod -R 755 /usr/local/lib/R/
+RUN sudo chown -R dockeruser /usr/lib/R/ && sudo chmod -R 755 /usr/lib/R/
+RUN sudo chown -R dockeruser /usr/share/R/ && sudo chmod -R 755 /usr/share/R/
+RUN sudo apt install -y libcurl4-openssl-dev libssl-dev libnetcdf-dev
+RUN R -e "options(repos = c(CRAN = 'https://cloud.r-project.org/')); if (!require('BiocManager', quietly = TRUE)) install.packages('BiocManager'); BiocManager::install"
+RUN R -e "BiocManager::install(c('xcms', 'MsExperiment', 'MetaboCoreUtils', 'MsCoreUtils', 'Spectra'))"
