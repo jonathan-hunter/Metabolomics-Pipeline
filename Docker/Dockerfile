@@ -58,3 +58,6 @@ RUN R -e "BiocManager::install(c('xcms', 'MsExperiment', 'MetaboCoreUtils', 'MsC
 
 # Update cudNN
 RUN ~/venv/bin/pip install --upgrade nvidia-cudnn-cu12
+
+# Install packages contd. (python)
+RUN ~/venv/bin/pip install pyopenms pyteomics lxml sqlalchemy pynumpress spectrum_utils seaborn
