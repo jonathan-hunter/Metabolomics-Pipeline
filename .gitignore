@@ -1,7 +1,7 @@
 Case_Study/
 Docker/sync/jupyter.txt
-Docker/sync/Data/
-Docker/sync/Output/
-Docker/sync/Spectral_Databases/
-Docker/sync/NeatMS/
+Docker/sync/Data
+Docker/sync/Output
+Docker/sync/Spectral_Databases
+Docker/sync/NeatMS
 "Case study Metabolomics data analyst (Mass spectrometry).pdf"
