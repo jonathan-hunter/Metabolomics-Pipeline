@@ -60,4 +60,4 @@ RUN R -e "BiocManager::install(c('xcms', 'MsExperiment', 'MetaboCoreUtils', 'MsC
 RUN ~/venv/bin/pip install --upgrade nvidia-cudnn-cu12
 
 # Install packages contd. (python)
-RUN ~/venv/bin/pip install pyopenms pyteomics lxml sqlalchemy pynumpress spectrum_utils seaborn
+RUN ~/venv/bin/pip install pyteomics lxml sqlalchemy pynumpress spectrum_utils seaborn pyopenms matchms
