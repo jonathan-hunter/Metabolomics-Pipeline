@@ -54,8 +54,9 @@ RUN sudo chown -R dockeruser /usr/lib/R/ && sudo chmod -R 755 /usr/lib/R/
 RUN sudo chown -R dockeruser /usr/share/R/ && sudo chmod -R 755 /usr/share/R/
 RUN sudo apt install -y libcurl4-openssl-dev libssl-dev libnetcdf-dev
 RUN R -e "options(repos = c(CRAN = 'https://cloud.r-project.org/')); if (!require('BiocManager', quietly = TRUE)) install.packages('BiocManager'); BiocManager::install"
-RUN R -e "BiocManager::install(c('xcms', 'MsExperiment', 'MetaboCoreUtils', 'MsCoreUtils', 'Spectra', 'CAMERA'))"
+RUN R -e "BiocManager::install(c('xcms', 'MsExperiment', 'MetaboCoreUtils', 'MsCoreUtils', 'Spectra', 'CAMERA', 'MsBackendMgf'))"
 RUN R -e "options(repos = c(CRAN = 'https://cloud.r-project.org/')); install.packages('rgl')"
+
 
 # Update cudNN
 RUN ~/venv/bin/pip install --upgrade nvidia-cudnn-cu12
