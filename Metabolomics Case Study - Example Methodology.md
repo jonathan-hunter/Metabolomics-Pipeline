@@ -62,3 +62,7 @@ De-novo simulation/determination of MS2 spectra/analyte structures.
 
 Deep learning based peak picking algorithm.
 - Rather than the conventional peak picking algorithms that XCMS uses, some instrument vendor software now includes Deep Learning based peak picking algorithms that reduce the number of false positives, split peaks etc. Simplifying and improving the accuracy of the workflow.
+
+Optimise and Parellelise the CPU bound steps if possible.
+
+Refactor, Better comments, add unit tests, documentation.
