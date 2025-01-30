@@ -23,4 +23,4 @@ services:
     stdin_open: true            # Keep stdin open for interactive shell
     tty: true                   # Allocate a pseudo-TTY for the container
     restart: always
-    command: /bin/bash -c "sudo chmod -R 777 /home/dockeruser/sync && source ~/venv/bin/activate && jupyter lab --ip=0.0.0.0 --no-browser --NotebookApp.token=YJTVQZzUyHYr2tzmpm8THuqn4QJEq4FvEAD7tdPw"
+    command: /bin/bash -c "sudo chmod -R 777 /home/dockeruser/sync && source ~/venv/bin/activate && jupyter lab --ip=0.0.0.0 --no-browser --NotebookApp.token='$SECURE_TOKEN'"
