@@ -21,7 +21,6 @@ SHELL ["/bin/bash", "-c"]
 RUN sudo apt update
 RUN sudo apt install -y git curl wget pip python3-full
 
-
 # Pull cuda-samples, make deviceQuery.
 RUN git clone https://github.com/NVIDIA/cuda-samples.git \
     && cd cuda-samples/Samples/1_Utilities/deviceQuery \
@@ -30,10 +29,7 @@ RUN git clone https://github.com/NVIDIA/cuda-samples.git \
 # Install python and create a virtual environment     
 RUN sudo apt install -y python3-full
 RUN python3 -m venv ~/venv/
-
-# Install packages (python)
 RUN ~/venv/bin/pip install --upgrade pip
-RUN ~/venv/bin/pip install jupyterlab
 
 # Install R
 RUN sudo apt install -y r-base r-base-dev
@@ -41,12 +37,6 @@ RUN sudo apt install -y r-base r-base-dev
 # Install rpy2
 RUN sudo apt install -y libtirpc-dev
 RUN ~/venv/bin/pip install rpy2
-
-# Install packages contd. (python)
-RUN ~/venv/bin/pip install pymzml numpy pandas scikit-learn pillow h5py keras NeatMS matplotlib
-RUN ~/venv/bin/pip install git+https://github.com/PangeAI/simms
-RUN ~/venv/bin/pip install --upgrade tensorflow[and-cuda]
-RUN ~/venv/bin/pip install torch torchvision torchaudio
 
 # Install R packages
 RUN sudo chown -R dockeruser /usr/local/lib/R/ && sudo chmod -R 755 /usr/local/lib/R/
@@ -58,9 +48,16 @@ RUN R -e "options(repos = c(CRAN = 'https://cloud.r-project.org/')); if (!requir
 RUN R -e "BiocManager::install(c('xcms', 'MsExperiment', 'MetaboCoreUtils', 'MsCoreUtils', 'Spectra', 'CAMERA', 'MsBackendMgf'))"
 RUN R -e "options(repos = c(CRAN = 'https://cloud.r-project.org/')); install.packages('rgl')"
 
+# Install packages (python)
+RUN ~/venv/bin/pip install jupyterlab
+RUN ~/venv/bin/pip install pymzml numpy pandas scikit-learn pillow h5py keras NeatMS matplotlib
+RUN ~/venv/bin/pip install git+https://github.com/PangeAI/simms
+RUN ~/venv/bin/pip install --upgrade tensorflow[and-cuda]
+RUN ~/venv/bin/pip install torch torchvision torchaudio
+RUN ~/venv/bin/pip install pyteomics lxml sqlalchemy pynumpress spectrum_utils seaborn matchms
+
+# Install pyopenms
+RUN ~/venv/bin/pip install --index-url https://pypi.cs.uni-tuebingen.de/simple/ pyopenms==3.1.0
 
 # Update cudNN
 RUN ~/venv/bin/pip install --upgrade nvidia-cudnn-cu12
-
-# Install packages contd. (python)
-RUN ~/venv/bin/pip install pyteomics lxml sqlalchemy pynumpress spectrum_utils seaborn pyopenms matchms
